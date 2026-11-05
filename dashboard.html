@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AutoBOLA Dashboard</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 35px 18px;
+      background: #0b1428;
+      color: #f5f8ff;
+      font-family: Arial, sans-serif;
+    }
+
+    main {
+      max-width: 850px;
+      margin: auto;
+    }
+
+    .panel {
+      background: #14213c;
+      border: 1px solid #2c3d5d;
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 18px;
+    }
+
+    h1 { color: #42d6df; margin-bottom: 6px; }
+    .muted { color: #afc1df; }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      background: #0b1428;
+      color: white;
+      border: 1px solid #415474;
+      border-radius: 7px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #2479e8;
+      color: white;
+      border: 0;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 18px;
+    }
+
+    button:disabled { opacity: 0.6; cursor: wait; }
+
+    pre {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      color: #c8f6e6;
+      line-height: 1.6;
+    }
+
+    .status { font-weight: bold; }
+  </style>
+</head>
+
+<body>
+<main>
+  <section class="panel">
+    <h1>🛡 AutoBOLA</h1>
+    <p class="muted">
+      Automated BOLA/IDOR Scanner for REST APIs
+    </p>
+    <p>This dashboard connects the frontend to the FastAPI backend.</p>
+  </section>
+
+  <section class="panel">
+    <h2>Scan Configuration</h2>
+
+    <label for="target">Target API</label>
+    <input id="target" value="http://127.0.0.1:8000" readonly>
+
+    <p class="muted">
+      The scanner will test its configured vulnerable and secure cases.
+    </p>
+
+    <button id="scanButton" onclick="runScan()">RUN SCAN</button>
+    <p id="status" class="status"></p>
+  </section>
+
+  <section class="panel">
+    <h2>Scan Results</h2>
+    <pre id="results">No scan has been run yet.</pre>
+  </section>
+</main>
+
+<script>
+  async function runScan() {
+    const button = document.getElementById("scanButton");
+    const status = document.getElementById("status");
+    const results = document.getElementById("results");
+
+    button.disabled = true;
+    status.textContent = "Scan running...";
+    results.textContent = "Waiting for backend response...";
+
+    try {
+      const response = await fetch("/scan", {
+        method: "POST"
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.detail || "Backend scan failed");
+      }
+
+      results.textContent = JSON.stringify(data.report, null, 2);
+      status.textContent = "Scan completed. Review the results below.";
+    } catch (error) {
+      status.textContent = "Error: " + error.message;
+      results.textContent =
+        "Check that the FastAPI server is running and review its terminal.";
+    } finally {
+      button.disabled = false;
+    }
+  }
+</script>
+</body>
+</html>

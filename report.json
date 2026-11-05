@@ -1,0 +1,26 @@
+{
+    "project": "AutoBOLA",
+    "scan_time_utc": "2026-10-27T10:23:15.569693+00:00",
+    "tests": [
+        {
+            "endpoint": "GET /orders/202",
+            "test_mode": "vulnerable",
+            "test_user": "alice",
+            "resource_owner": "bob",
+            "http_status": 200,
+            "result": "INCONCLUSIVE",
+            "evidence": "The response did not match the expected test result. Manual review is needed.",
+            "recommendation": "Verify that the authenticated user owns the requested resource before returning or modifying it."
+        },
+        {
+            "endpoint": "GET /orders/202",
+            "test_mode": "secure",
+            "test_user": "alice",
+            "resource_owner": "bob",
+            "http_status": 403,
+            "result": "BLOCKED",
+            "evidence": "The API denied Alice access to Bob's order.",
+            "recommendation": "Verify that the authenticated user owns the requested resource before returning or modifying it."
+        }
+    ]
+}
