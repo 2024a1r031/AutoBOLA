@@ -1,0 +1,99 @@
+{
+  "target": "own-api",
+  "base_url": "http://127.0.0.1:8001",
+  "labels": "own-api/secure",
+  "rows": [
+    {
+      "resource": "orders",
+      "endpoint": "GET /orders/{order_id}",
+      "skipped": false,
+      "verdict": false,
+      "naive": false,
+      "status": 403,
+      "truth": "secure",
+      "evidence": "HTTP 403: access denied / hidden"
+    },
+    {
+      "resource": "orders",
+      "endpoint": "PUT /orders/{order_id}",
+      "skipped": false,
+      "verdict": false,
+      "naive": false,
+      "status": 403,
+      "truth": "secure",
+      "evidence": "HTTP 403: update rejected"
+    },
+    {
+      "resource": "orders",
+      "endpoint": "DELETE /orders/{order_id}",
+      "skipped": false,
+      "verdict": false,
+      "naive": false,
+      "status": 403,
+      "truth": "secure",
+      "evidence": "HTTP 403: delete rejected"
+    },
+    {
+      "resource": "invoices",
+      "endpoint": "GET /invoices/{invoice_id}",
+      "skipped": false,
+      "verdict": false,
+      "naive": false,
+      "status": 403,
+      "truth": "secure",
+      "evidence": "HTTP 403: access denied / hidden"
+    },
+    {
+      "resource": "notes",
+      "endpoint": "GET /notes/{note_id}",
+      "skipped": false,
+      "verdict": false,
+      "naive": false,
+      "status": 403,
+      "truth": "secure",
+      "evidence": "HTTP 403: access denied / hidden"
+    },
+    {
+      "resource": "notes",
+      "endpoint": "PUT /notes/{note_id}",
+      "skipped": false,
+      "verdict": false,
+      "naive": true,
+      "status": 200,
+      "truth": "secure",
+      "evidence": "HTTP 200 returned, but victim's data is UNCHANGED (decoy / silently ignored)"
+    },
+    {
+      "resource": "notes",
+      "endpoint": "DELETE /notes/{note_id}",
+      "skipped": false,
+      "verdict": false,
+      "naive": true,
+      "status": 200,
+      "truth": "secure",
+      "evidence": "HTTP 200 returned, but victim's object STILL EXISTS (decoy / silently ignored)"
+    }
+  ],
+  "metrics": {
+    "naive": {
+      "TP": 0,
+      "FP": 2,
+      "FN": 0,
+      "TN": 5,
+      "precision": 0.0,
+      "recall": null,
+      "accuracy": 0.714,
+      "false_positive_rate": 0.286
+    },
+    "verdict": {
+      "TP": 0,
+      "FP": 0,
+      "FN": 0,
+      "TN": 7,
+      "precision": null,
+      "recall": null,
+      "accuracy": 1.0,
+      "false_positive_rate": 0.0
+    }
+  }
+}

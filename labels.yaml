@@ -1,0 +1,32 @@
+# GROUND TRUTH: for every endpoint we write down in advance whether it is truly vulnerable.
+# The scanner's answers are compared against this file to compute TP / FP / FN / TN.
+
+own-api/vulnerable:
+  "GET /orders/{order_id}": vulnerable
+  "PUT /orders/{order_id}": vulnerable
+  "DELETE /orders/{order_id}": vulnerable
+  "GET /invoices/{invoice_id}": vulnerable
+  "GET /notes/{note_id}": secure
+  "PUT /notes/{note_id}": secure         # decoy: answers 200 but changes nothing
+  "DELETE /notes/{note_id}": secure      # decoy: answers 200 but deletes nothing
+
+own-api/secure:
+  "GET /orders/{order_id}": secure
+  "PUT /orders/{order_id}": secure
+  "DELETE /orders/{order_id}": secure
+  "GET /invoices/{invoice_id}": secure
+  "GET /notes/{note_id}": secure
+  "PUT /notes/{note_id}": secure
+  "DELETE /notes/{note_id}": secure
+
+vampi/vulnerable:
+  "GET /books/v1/{book_title}": vulnerable                 # other users can read someone's book secret
+  "PUT /users/v1/{username}/password": vulnerable          # anyone can change someone else's password
+  "PUT /users/v1/{username}/email": secure                 # decoy: changes the CALLER's own email, victim unaffected
+  "DELETE /users/v1/{username}": secure                    # admin only, victim unaffected
+
+vampi/secure:
+  "GET /books/v1/{book_title}": secure
+  "PUT /users/v1/{username}/password": secure              # decoy: 204 but victim's password unchanged
+  "PUT /users/v1/{username}/email": secure
+  "DELETE /users/v1/{username}": secure

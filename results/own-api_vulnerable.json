@@ -1,0 +1,99 @@
+{
+  "target": "own-api",
+  "base_url": "http://127.0.0.1:8000",
+  "labels": "own-api/vulnerable",
+  "rows": [
+    {
+      "resource": "orders",
+      "endpoint": "GET /orders/{order_id}",
+      "skipped": false,
+      "verdict": true,
+      "naive": true,
+      "status": 200,
+      "truth": "vulnerable",
+      "evidence": "HTTP 200: attacker's response contained the victim's secret marker"
+    },
+    {
+      "resource": "orders",
+      "endpoint": "PUT /orders/{order_id}",
+      "skipped": false,
+      "verdict": true,
+      "naive": true,
+      "status": 200,
+      "truth": "vulnerable",
+      "evidence": "HTTP 200: victim's data really changed to the attacker's value"
+    },
+    {
+      "resource": "orders",
+      "endpoint": "DELETE /orders/{order_id}",
+      "skipped": false,
+      "verdict": true,
+      "naive": true,
+      "status": 200,
+      "truth": "vulnerable",
+      "evidence": "HTTP 200: victim's object is really gone"
+    },
+    {
+      "resource": "invoices",
+      "endpoint": "GET /invoices/{invoice_id}",
+      "skipped": false,
+      "verdict": true,
+      "naive": true,
+      "status": 200,
+      "truth": "vulnerable",
+      "evidence": "HTTP 200: attacker's response contained the victim's secret marker"
+    },
+    {
+      "resource": "notes",
+      "endpoint": "GET /notes/{note_id}",
+      "skipped": false,
+      "verdict": false,
+      "naive": false,
+      "status": 403,
+      "truth": "secure",
+      "evidence": "HTTP 403: access denied / hidden"
+    },
+    {
+      "resource": "notes",
+      "endpoint": "PUT /notes/{note_id}",
+      "skipped": false,
+      "verdict": false,
+      "naive": true,
+      "status": 200,
+      "truth": "secure",
+      "evidence": "HTTP 200 returned, but victim's data is UNCHANGED (decoy / silently ignored)"
+    },
+    {
+      "resource": "notes",
+      "endpoint": "DELETE /notes/{note_id}",
+      "skipped": false,
+      "verdict": false,
+      "naive": true,
+      "status": 200,
+      "truth": "secure",
+      "evidence": "HTTP 200 returned, but victim's object STILL EXISTS (decoy / silently ignored)"
+    }
+  ],
+  "metrics": {
+    "naive": {
+      "TP": 4,
+      "FP": 2,
+      "FN": 0,
+      "TN": 1,
+      "precision": 0.667,
+      "recall": 1.0,
+      "accuracy": 0.714,
+      "false_positive_rate": 0.667
+    },
+    "verdict": {
+      "TP": 4,
+      "FP": 0,
+      "FN": 0,
+      "TN": 3,
+      "precision": 1.0,
+      "recall": 1.0,
+      "accuracy": 1.0,
+      "false_positive_rate": 0.0
+    }
+  }
+}

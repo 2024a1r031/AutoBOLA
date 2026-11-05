@@ -1,0 +1,69 @@
+{
+  "target": "vampi",
+  "base_url": "http://127.0.0.1:5001",
+  "labels": "vampi/secure",
+  "rows": [
+    {
+      "resource": "books",
+      "endpoint": "GET /books/v1/{book_title}",
+      "skipped": false,
+      "verdict": false,
+      "naive": false,
+      "status": 404,
+      "truth": "secure",
+      "evidence": "HTTP 404: access denied / hidden"
+    },
+    {
+      "resource": "user_password",
+      "endpoint": "PUT /users/v1/{username}/password",
+      "skipped": false,
+      "verdict": false,
+      "naive": true,
+      "status": 204,
+      "truth": "secure",
+      "evidence": "HTTP 204 returned, but victim's data is UNCHANGED (decoy / silently ignored)"
+    },
+    {
+      "resource": "user_email",
+      "endpoint": "PUT /users/v1/{username}/email",
+      "skipped": false,
+      "verdict": false,
+      "naive": false,
+      "status": 400,
+      "truth": "secure",
+      "evidence": "HTTP 400: update rejected"
+    },
+    {
+      "resource": "user_delete",
+      "endpoint": "DELETE /users/v1/{username}",
+      "skipped": false,
+      "verdict": false,
+      "naive": false,
+      "status": 401,
+      "truth": "secure",
+      "evidence": "HTTP 401: delete rejected"
+    }
+  ],
+  "metrics": {
+    "naive": {
+      "TP": 0,
+      "FP": 1,
+      "FN": 0,
+      "TN": 3,
+      "precision": 0.0,
+      "recall": null,
+      "accuracy": 0.75,
+      "false_positive_rate": 0.25
+    },
+    "verdict": {
+      "TP": 0,
+      "FP": 0,
+      "FN": 0,
+      "TN": 4,
+      "precision": null,
+      "recall": null,
+      "accuracy": 1.0,
+      "false_positive_rate": 0.0
+    }
+  }
+}

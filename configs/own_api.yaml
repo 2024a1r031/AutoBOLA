@@ -1,0 +1,29 @@
+# Config for OUR OWN test API (target_api/app.py)
+# The API SPEC tells the scanner which endpoints/methods exist.
+# This config tells it HOW to log in, how to create an object, and what an update looks like.
+name: own-api
+base_url: http://127.0.0.1:8000
+spec: /openapi.json            # starts with "/" -> fetched from base_url
+auth:
+  register: {path: /register, body: {username: "{username}", password: "{password}"}}
+  login:    {path: /login,    body: {username: "{username}", password: "{password}"}, token_field: access_token}
+  header: Authorization
+  prefix: "Bearer "
+resources:
+  - name: orders
+    create: {path: /orders, body: {item: book, note: "{marker}"}, id_from: response.id}
+    read_path: /orders/{order_id}
+    nonexistent_id: 999999
+    update_body: {note: "{new}"}
+    endpoints: ["/orders/{order_id}"]
+  - name: invoices
+    create: {path: /invoices, body: {amount: 100, memo: "{marker}"}, id_from: response.id}
+    read_path: /invoices/{invoice_id}
+    nonexistent_id: 999999
+    endpoints: ["/invoices/{invoice_id}"]
+  - name: notes
+    create: {path: /notes, body: {text: "{marker}"}, id_from: response.id}
+    read_path: /notes/{note_id}
+    nonexistent_id: 999999
+    update_body: {text: "{new}"}
+    endpoints: ["/notes/{note_id}"]

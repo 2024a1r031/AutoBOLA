@@ -1,0 +1,36 @@
+# Config for VAmPI (the well-known vulnerable API: https://github.com/erev0s/VAmPI)
+name: vampi
+base_url: http://127.0.0.1:5000
+spec: /openapi.json
+setup:
+  - {method: GET, path: /createdb}     # VAmPI needs its database created first
+auth:
+  register: {path: /users/v1/register, body: {username: "{username}", password: "{password}", email: "{username}@mail.com"}}
+  login:    {path: /users/v1/login,    body: {username: "{username}", password: "{password}"}, token_field: auth_token}
+  header: Authorization
+  prefix: "Bearer "
+resources:
+  - name: books
+    create: {path: /books/v1, body: {book_title: "book_{rand}", secret: "{marker}"}, id_from: request.book_title}
+    read_path: /books/v1/{book_title}
+    nonexistent_id: no_such_book_999
+    endpoints: ["/books/v1/{book_title}"]
+  - name: user_password
+    create: null                      # the "object" is the victim's own user account
+    id_from: victim.username
+    read_path: /users/v1/{username}
+    update_body: {password: "{new}"}
+    verify: {type: login}             # state check: can the victim log in with the NEW password?
+    endpoints: ["/users/v1/{username}/password"]
+  - name: user_email
+    create: null
+    id_from: victim.username
+    read_path: /users/v1/{username}
+    update_body: {email: "{new}@mail.com"}
+    endpoints: ["/users/v1/{username}/email"]
+  - name: user_delete
+    create: null
+    id_from: victim.username
+    read_path: /users/v1/{username}
+    methods: [DELETE]                 # GET /users/v1/{username} is public by design, so we skip it
+    endpoints: ["/users/v1/{username}"]
